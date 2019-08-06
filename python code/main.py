@@ -88,7 +88,6 @@ for i in range(constant.RUNS):
         steps += 1
     
         a = w[box] + np.random.normal(0.0, constant.SIGMA)
-    #    print("a = {}".format(a))
         
         y = np.sign(a)
         if y == 0:
@@ -104,14 +103,9 @@ for i in range(constant.RUNS):
         oldp = v[box]
             
         x, x_dot, theta, theta_dot = sim(y, x, x_dot, theta, theta_dot)
-    #    print(x)
-    #    print(x_dot)
-    #    print(theta)
-    #    print(theta_dot)
         
         box = get_box(x, x_dot, theta, theta_dot)
-    #    print(box)
-        
+
         if box < 0:
             failed = 1
             failures += 1
@@ -164,8 +158,8 @@ plt.ylabel('TIME STEPS UNTIL FAILURE')
 plt.plot(avg)
 
 # plt.show()
-fig1.savefig("individual.pdf")
-fig2.savefig("average.pdf")
+fig1.savefig("output/fig5.pdf")
+fig2.savefig("output/fig4.pdf")
 
 
 
