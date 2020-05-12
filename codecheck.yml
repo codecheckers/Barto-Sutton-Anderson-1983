@@ -1,0 +1,16 @@
+---
+version: https://codecheck.org.uk/spec/config/1.0/
+
+manifest:
+  - file: python code/output/fig4.pdf
+    comment: 'Figure 4 in the paper with simulation results'
+  - file: python code/output/fig5.pdf
+    comment: 'Figure 5 in the paper with simulation results'
+
+paper:
+  title: "Neuronlike adaptive elements that can solve difficult learning control problems"
+  authors:
+    - name: Andrew G. Barto
+    - name: Richard S. Sutton 
+    - name: C. W. Anderson
+  reference: https://doi.org/10.1109/TSMC.1983.6313077
