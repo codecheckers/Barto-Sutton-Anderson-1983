@@ -1,0 +1,120 @@
+---
+output:
+  pdf_document:
+    toc: false
+    includes:
+       in_header: codecheck-preamble.sty
+  html_document:
+    self_contained: false
+    toc: true
+    toc_float: false
+---
+
+```{r rsetup,eval=TRUE,include=FALSE}
+require(codecheck)
+require(knitr)
+require(rprojroot)
+require(yaml)
+require(xtable)
+require(tibble)
+require(readr)
+options(width=60)
+opts_chunk$set(cache=FALSE)
+
+root = find_root("codecheck.yml")
+```
+
+```{r, echo=FALSE,results='asis'}
+latex_codecheck_logo()
+```
+
+```{r rsetup-knitr, eval=TRUE, include=FALSE}
+metadata = codecheck_metadata(root)
+manifest = metadata$manifest
+
+dest_dir = file.path(root, "codecheck", "outputs")
+if ( !dir.exists(dest_dir) ) {
+  dir.create(dest_dir)
+}
+manifest_df = copy_manifest_files(root, manifest,
+                                  dest_dir, keep_full_path=FALSE)
+```
+
+---
+title: `r paste("CODECHECK certificate", metadata$certificate)`
+subtitle: `r codecheck:::as_latex_url(metadata$report)`
+---
+
+```{r summary_metadata, echo=FALSE, results='asis'}
+latex_summary_of_metadata(metadata)
+```
+
+```{r summary_manifest, echo=FALSE, results='asis'}
+xt = xtable(manifest_df[, c("output", "comment", "size")],
+            digits=0,
+            caption="Summary of output files generated")
+print(xt, include.rownames=FALSE, comment=FALSE)
+```
+
+# Summary
+
+The check was successful, without larger issues.
+The runtime environment was not specified at all but could be derived.
+The created graphs match the ones provided by the authors.
+However, these figures not perfectly resemble the ones from the original paper.
+
+# How to cite this report
+
+```
+Daniel Nüst. (2020, May 14). CODECHECK certificate 2020-004. Zenodo.
+http://doi.org/10.5281/zenodo.3827371
+```
+
+\clearpage
+
+# CODECHECKER notes
+
+The github repo  contained all the necessary code.
+The test code was written in Python and there was a `Makefile`.
+I did not take a look at the C code at all.
+
+I used a virtual environment to run the Python code, using Python 3 because of the sheband in `main.py`.
+I created `codecheck/requirements.txt` with trial and error to identify the required libraries.
+
+Run the following code in a command line, then render this document (see `codecheck/Makefile`).
+The rendering copies the generated files to the CODECHECK directory.
+
+```bash
+#mkvirtualenv --python=$(which python3) barto-sutton-anderson-1983
+
+cd python\ code
+mv output/ output.backup
+mkdir output
+
+make
+
+cd ../codecheck/
+make clean codecheck.pdf
+```
+
+This took about 6 minutes on my laptop computer (8 cores, 40GB RAM).
+
+Note that `python code/Makefile` does only mention one output file, but the script actually generates both.
+
+\clearpage
+
+```{r, echo=FALSE, fig.cap=manifest_df[1:7,"comment"]}
+knitr::include_graphics(manifest_df[1, "dest"])
+cat('\n\n')
+knitr::include_graphics(manifest_df[2, "dest"])
+```
+
+\clearpage
+# About this document
+
+This document was created using [R Markdown](https://rmarkdown.rstudio.com/) using the [`codecheck`](https://github.com/codecheckers/codecheck) R package.
+`make codecheck.pdf` will regenerate the file.
+
+```{r}
+sessionInfo()
+```
